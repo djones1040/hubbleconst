@@ -643,7 +643,7 @@ def plot_cmd(genversion, cid_list, nml, isdist, private):
                 + nml
                 + " VERSION_PHOTOMETRY "
                 + genversion
-                + " MXEVT_PROCESS 5 SNTABLE_LIST "
+                + " MXEVT_PROCESS 1000 SNTABLE_LIST "
                 + "'FITRES(text:key) SNANA(text:key) LCPLOT(text:key) SPECPLOT(text:key)' TEXTFILE_PREFIX OUT_TEMP_"
                 + rand
                 + " > OUT_TEMP_"
@@ -654,7 +654,7 @@ def plot_cmd(genversion, cid_list, nml, isdist, private):
         cmd = (
             "snana.exe NOFILE VERSION_PHOTOMETRY "
             + genversion
-            + " MXEVT_PROCESS 5 SNTABLE_LIST 'SNANA(text:key) LCPLOT(text:key) SPECPLOT(text:key)'"
+            + " MXEVT_PROCESS 1000 SNTABLE_LIST 'SNANA(text:key) LCPLOT(text:key) SPECPLOT(text:key)'"
             + " TEXTFILE_PREFIX 'OUT_TEMP_"
             + rand
             + "' > OUT_TEMP_"
@@ -1045,10 +1045,10 @@ def main():
             if options.dist or options.fitres_filename is not None:
                 print(
                     """No CID given, assuming all for distributions, 
-                    then first 5 for LC/SPEC plotting..."""
+                    then first 1000 for LC/SPEC plotting..."""
                 )
             else:
-                print("No CID given, assuming first 5...")
+                print("No CID given, assuming first 1000...")
             options.CID = None
             all_cid = True
         elif "-" in options.CID:
@@ -1097,11 +1097,11 @@ def main():
             options.filt_list = options.filt_list.split(",")
         filename = 'lcplot_' + options.version + ".pdf"
         num = 0
-        if os.path.exists(filename):
-            filename = os.path.splitext(filename)[0] + "_" + str(num) + ".pdf"
-        while os.path.exists(filename):
-            num += 1
-            filename = os.path.splitext(filename)[0][:-1] + str(num) + ".pdf"
+        #if os.path.exists(filename):
+        #    filename = os.path.splitext(filename)[0] + "_" + str(num) + ".pdf"
+        #while os.path.exists(filename):
+        #    num += 1
+        #    filename = os.path.splitext(filename)[0][:-1] + str(num) + ".pdf"
         if options.dist:
             fitres = read_fitres(
                 options.base_name + ".FITRES.TEXT", options.joint_param
@@ -1109,8 +1109,8 @@ def main():
             figs = create_dists(fitres, options.joint_param, options.joint_type)
         else:
             figs = []
-        if all_cid:
-            options.CID = options.CID[:5]
+        #if all_cid:
+        #    options.CID = options.CID[:5]
         with PdfPages(filename) as pdf:
             for f in figs:
                 pdf.savefig(f)
